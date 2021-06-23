@@ -19,7 +19,7 @@ $ npm install -g @nafkhanzam/nz-cli
 $ nz COMMAND
 running command...
 $ nz (-v|--version|version)
-@nafkhanzam/nz-cli/0.0.1 linux-x64 node-v14.17.1
+@nafkhanzam/nz-cli/0.0.2 linux-x64 node-v14.17.1
 $ nz --help [COMMAND]
 USAGE
   $ nz COMMAND
@@ -29,6 +29,7 @@ USAGE
 # Commands
 <!-- commands -->
 * [`nz gen-assets`](#nz-gen-assets)
+* [`nz gen-urls`](#nz-gen-urls)
 * [`nz help [COMMAND]`](#nz-help-command)
 
 ## `nz gen-assets`
@@ -41,7 +42,19 @@ OPTIONS
   -c, --config=config  Configuration file path.
 ```
 
-_See code: [src/commands/gen-assets.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.1/src/commands/gen-assets.ts)_
+_See code: [src/commands/gen-assets.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.2/src/commands/gen-assets.ts)_
+
+## `nz gen-urls`
+
+```
+USAGE
+  $ nz gen-urls
+
+OPTIONS
+  -c, --config=config  Configuration file path.
+```
+
+_See code: [src/commands/gen-urls.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.2/src/commands/gen-urls.ts)_
 
 ## `nz help [COMMAND]`
 

@@ -1,7 +1,7 @@
 {
   "name": "@nafkhanzam/nz-cli",
   "description": "command utilities for nafkhanzam projects",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "nafkhanzam @nafkhanzam",
   "bin": {
     "nz": "./bin/run"
@@ -73,7 +73,8 @@
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md",
+    "patch": "yarn version --patch"
   },
   "types": "lib/index.d.ts"
 }
