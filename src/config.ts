@@ -3,6 +3,7 @@ import {zod} from "@nafkhanzam/common-utils";
 export const nzConfigValidator = zod
   .object({
     "gen-assets": zod.object({
+      prefixPath: zod.string(),
       path: zod.string(),
       output: zod.string(),
     }),

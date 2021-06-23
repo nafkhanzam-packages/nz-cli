@@ -9,7 +9,7 @@ import {NzConfig} from "../config";
 import {utils} from "../utils";
 import sortObject from "deep-sort-object";
 
-const KEY: keyof NzConfig = "gen-assets";
+const KEY = "gen-assets";
 
 export default class GenAssets extends NzCommand {
   static flags = {
@@ -35,13 +35,13 @@ export default class GenAssets extends NzCommand {
   }
 
   private async impl(conf: NonNullable<NzConfig[typeof KEY]>): Promise<void> {
-    const {path, output} = conf;
+    const {prefixPath, path, output} = conf;
 
     // Implementation
     const rawEntries = await fg(`${path}**/*`);
     const result: Record<string, unknown> = {};
     for (const entry of rawEntries) {
-      const filePath = entry.substr("public".length);
+      const filePath = `${prefixPath}${entry.substr(path.length)}`;
       const objPath = utils
         .removeExtension(entry)
         .substr(path.length)
@@ -59,7 +59,7 @@ export default class GenAssets extends NzCommand {
       prettier.format(
         `
           /**
-          * THIS IS AUTOMATICALLY GENERATED USING /generateAssets.ts.
+          * THIS IS AUTOMATICALLY GENERATED USING @nafkhanzam/nz-cli.
           * DON'T CHANGE IT MANUALLY.
           */
 
