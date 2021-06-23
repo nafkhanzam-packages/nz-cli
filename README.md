@@ -28,28 +28,20 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`nz hello [FILE]`](#nz-hello-file)
+* [`nz gen-assets`](#nz-gen-assets)
 * [`nz help [COMMAND]`](#nz-help-command)
 
-## `nz hello [FILE]`
-
-describe the command here
+## `nz gen-assets`
 
 ```
 USAGE
-  $ nz hello [FILE]
+  $ nz gen-assets
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ nz hello
-  hello world from ./src/hello.ts!
+  -c, --config=config  Configuration file path.
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.1/src/commands/hello.ts)_
+_See code: [src/commands/gen-assets.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.1/src/commands/gen-assets.ts)_
 
 ## `nz help [COMMAND]`
 
