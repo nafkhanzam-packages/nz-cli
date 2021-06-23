@@ -1,0 +1,78 @@
+{
+  "name": "nz-cli",
+  "description": "command utilities for nafkhanzam projects",
+  "version": "0.0.1",
+  "author": "nafkhanzam @nafkhanzam",
+  "bin": {
+    "nz": "./bin/run"
+  },
+  "bugs": "https://github.com/nafkhanzam/nz-cli/issues",
+  "dependencies": {
+    "@nafkhanzam/common-utils": "^0.0.44",
+    "@oclif/command": "^1.8.0",
+    "@oclif/config": "^1.17.0",
+    "@oclif/plugin-help": "^3.2.2",
+    "chalk": "^4.1.1",
+    "deep-sort-object": "^1.0.2",
+    "fast-glob": "^3.2.5",
+    "fs-extra": "^10.0.0",
+    "lodash": "^4.17.21",
+    "prettier": "^2.3.1",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.26.0",
+    "@oclif/test": "^1.2.8",
+    "@types/chai": "^4.2.19",
+    "@types/chalk": "^2.2.0",
+    "@types/fs-extra": "^9.0.11",
+    "@types/lodash": "^4.14.170",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^15.12.4",
+    "@types/prettier": "^2.3.0",
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/parser": "^4.28.0",
+    "chai": "^4.3.4",
+    "eslint": "^7.29.0",
+    "eslint-config-oclif": "^3.1.0",
+    "eslint-config-oclif-typescript": "^0.2.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "globby": "^11.0.4",
+    "mocha": "^9.0.1",
+    "nyc": "^15.1.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.4"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "/bin",
+    "/lib",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "homepage": "https://github.com/nafkhanzam/nz-cli",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "nz",
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
+  },
+  "repository": "nafkhanzam/nz-cli",
+  "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "eslint . --ext .ts --config .eslintrc",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "types": "lib/index.d.ts"
+}
