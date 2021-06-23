@@ -7,6 +7,10 @@ export const nzConfigValidator = zod
       path: zod.string(),
       output: zod.string(),
     }),
+    "gen-urls": zod.object({
+      path: zod.string(),
+      output: zod.string(),
+    }),
   })
   .partial();
 
