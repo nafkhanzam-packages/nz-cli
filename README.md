@@ -15,11 +15,11 @@ command utilities for nafkhanzam projects
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g nz-cli
+$ npm install -g @nafkhanzam/nz-cli
 $ nz COMMAND
 running command...
 $ nz (-v|--version|version)
-nz-cli/0.0.1 linux-x64 node-v14.17.1
+@nafkhanzam/nz-cli/0.0.1 linux-x64 node-v14.17.1
 $ nz --help [COMMAND]
 USAGE
   $ nz COMMAND
