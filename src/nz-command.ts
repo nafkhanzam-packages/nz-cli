@@ -1,9 +1,16 @@
 import {validatorUtils} from "@nafkhanzam/common-utils";
-import Command from "@oclif/command";
+import Command, {flags} from "@oclif/command";
 import * as fs from "fs-extra";
 import {DEFAULT_CONFIG_PATH, NzConfig, nzConfigValidator} from "./config";
 
 export abstract class NzCommand extends Command {
+  static flags = {
+    config: flags.string({
+      char: "c",
+      description: "Configuration file path.",
+    }),
+  };
+
   validateConfig = (raw: unknown): NzConfig => {
     return validatorUtils.validate(nzConfigValidator, raw);
   };

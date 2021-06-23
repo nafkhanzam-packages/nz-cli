@@ -1,4 +1,3 @@
-import {flags} from "@oclif/command";
 import chalk from "chalk";
 import {NzCommand} from "../nz-command";
 import fg from "fast-glob";
@@ -12,13 +11,6 @@ import sortObject from "deep-sort-object";
 const KEY = "gen-assets";
 
 export default class GenAssets extends NzCommand {
-  static flags = {
-    config: flags.string({
-      char: "c",
-      description: "Configuration file path.",
-    }),
-  };
-
   override async run(): Promise<void> {
     const {flags} = this.parse(GenAssets);
     const [rootConf, confPath] = await this.readConfig(flags.config);
