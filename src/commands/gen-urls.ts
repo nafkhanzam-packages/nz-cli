@@ -8,7 +8,7 @@ import {NzConfig} from "../config";
 import {utils} from "../utils";
 import sortObject from "deep-sort-object";
 
-const KEY: keyof NzConfig = "gen-urls";
+const KEY = "gen-urls";
 
 export default class GenUrls extends NzCommand {
   override async run(): Promise<void> {
@@ -18,11 +18,7 @@ export default class GenUrls extends NzCommand {
     if (conf) {
       this.impl(conf);
     } else {
-      this.error(`${KEY} configuration is not found!`, {
-        suggestions: [
-          `Specify "${KEY}" configuration in the ${confPath} file!`,
-        ],
-      });
+      this.configNotFoundError(KEY, confPath);
     }
   }
 

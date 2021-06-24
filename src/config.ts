@@ -11,6 +11,10 @@ export const nzConfigValidator = zod
       path: zod.string(),
       output: zod.string(),
     }),
+    "gen-exports": zod.object({
+      globs: zod.array(zod.string()),
+      output: zod.string(),
+    }),
   })
   .partial();
 

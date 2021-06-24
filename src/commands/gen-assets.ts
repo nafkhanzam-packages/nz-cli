@@ -18,11 +18,7 @@ export default class GenAssets extends NzCommand {
     if (conf) {
       this.impl(conf);
     } else {
-      this.error(`${KEY} configuration is not found!`, {
-        suggestions: [
-          `Specify "${KEY}" configuration in the ${confPath} file!`,
-        ],
-      });
+      this.configNotFoundError(KEY, confPath);
     }
   }
 

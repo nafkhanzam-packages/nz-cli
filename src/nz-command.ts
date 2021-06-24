@@ -36,4 +36,10 @@ export abstract class NzCommand extends Command {
     const res = this.validateConfig(content);
     return [res, pathOrDefault];
   };
+
+  protected configNotFoundError = (key: string, confPath: string): void => {
+    this.error(`${key} configuration is not found!`, {
+      suggestions: [`Specify "${key}" configuration in the ${confPath} file!`],
+    });
+  };
 }
