@@ -9,6 +9,7 @@ import {utils} from "../utils";
 import sortObject from "deep-sort-object";
 
 const KEY = "gen-urls";
+const ARGS = "_";
 
 export default class GenUrls extends NzCommand {
   override async run(): Promise<void> {
@@ -30,29 +31,50 @@ export default class GenUrls extends NzCommand {
     const result: Record<string, unknown> = {};
     for (const rawEntry of rawEntries) {
       const entry = utils.removeExtension(rawEntry);
-      const filePath = entry.substr(path.length - 1);
+      const filePath =
+        entry.substr(path.length - 1).replace(/\/index$/, "") + "/";
       const objPath = entry
         .substr(path.length)
         .split("/")
         .map(_.camelCase)
         .map((v) => (v.match(/^\d(.*)/) ? `_${v}` : v));
-      _.set(result, objPath, filePath.replace(/\/index$/, "/"));
+      _.set(result, objPath, filePath);
     }
 
     const sortedResult = sortObject(result);
+    let stringified = JSON.stringify(sortedResult);
+
+    // Replacing to functions
+    const matches = stringified.match(/"\/([^"]*)\[([^"]*)\]([^"]*)\/"/g) ?? [];
+    for (const match of matches) {
+      let result = match.replace(/"/g, "`");
+      const slugMatches = result.match(/\[(.*?)\]/g) ?? [];
+      const slugMatchesWithContent = slugMatches.map((v) => [
+        v,
+        v.replace(/\[(.*?)\]/g, "$1"),
+      ]);
+      for (const [slugMatch, content] of slugMatchesWithContent) {
+        result = result.replace(slugMatch, `\${${ARGS}.${content}}`);
+      }
+      const paramTypeString = slugMatchesWithContent
+        .map(([_, content]) => `${content}: string`)
+        .join(", ");
+      const fnString = `(${ARGS}: {${paramTypeString}}) => ${result}`;
+      stringified = stringified.replace(match, fnString);
+    }
 
     const prettierConfig = prettier.resolveConfig.sync(output);
     await fs.writeFile(
       output,
       prettier.format(
         `
-          /**
-          * THIS IS AUTOMATICALLY GENERATED USING @nafkhanzam/nz-cli.
-          * DON'T CHANGE IT MANUALLY.
-          */
+        /**
+        * THIS IS AUTOMATICALLY GENERATED USING @nafkhanzam/nz-cli.
+        * DON'T CHANGE IT MANUALLY.
+        */
 
-          export const urls = ${JSON.stringify(sortedResult)}
-        `,
+        export const urls = ${stringified}
+      `,
         {
           parser: "typescript",
           ...prettierConfig,
