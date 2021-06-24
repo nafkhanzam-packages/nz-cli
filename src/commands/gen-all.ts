@@ -11,7 +11,7 @@ const COMMANDS: readonly (readonly [keyof NzConfig, typeof NzCommand])[] = [
 ];
 
 export default class GenAll extends NzCommand {
-  async run(): Promise<void> {
+  override async run(): Promise<void> {
     const promises: PromiseLike<unknown>[] = [];
     const {flags} = this.parse(GenAll);
     const [rootConf, confPath] = await this.readConfig(flags.config);
