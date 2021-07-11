@@ -27,11 +27,12 @@ export default class GenUrls extends NzCommand {
     const {path, output} = conf;
 
     // Implementation
-    const extensions = conf.extensions ?? [""];
-    const rawEntries = await fg([
-      ...extensions.map((v) => `${path}**/*.${v}`),
-      `!**/_*`,
-    ]);
+    const extensions = conf.extensions ?? [];
+    const filterFg =
+      extensions.length > 0
+        ? extensions.map((v) => `${path}**/*.${v}`)
+        : [`${path}**/*`];
+    const rawEntries = await fg([...filterFg, `!**/_*`]);
     const result: Record<string, unknown> = {};
     for (const rawEntry of rawEntries) {
       let cutEntry = rawEntry;
