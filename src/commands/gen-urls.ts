@@ -27,10 +27,18 @@ export default class GenUrls extends NzCommand {
     const {path, output} = conf;
 
     // Implementation
-    const rawEntries = await fg([`${path}**/*`, `!**/_*`]);
+    const extensions = conf.extensions ?? [""];
+    const rawEntries = await fg([
+      ...extensions.map((v) => `${path}**/*.${v}`),
+      `!**/_*`,
+    ]);
     const result: Record<string, unknown> = {};
     for (const rawEntry of rawEntries) {
-      const entry = utils.removeExtension(rawEntry);
+      let cutEntry = rawEntry;
+      for (const ext of extensions) {
+        cutEntry = cutEntry.replace(ext, "");
+      }
+      const entry = utils.removeExtension(cutEntry);
       const filePath =
         entry.substr(path.length - 1).replace(/\/index$/, "") + "/";
       const objPath = entry

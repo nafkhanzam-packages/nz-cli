@@ -10,6 +10,7 @@ export const nzConfigValidator = zod
     "gen-urls": zod.object({
       path: zod.string(),
       output: zod.string(),
+      extensions: zod.array(zod.string()).optional(),
     }),
     "gen-exports": zod.object({
       globs: zod.array(zod.string()),
