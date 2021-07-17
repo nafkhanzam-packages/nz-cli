@@ -3,6 +3,7 @@
     "skipLibCheck": true,
     "declaration": true,
     "importHelpers": true,
+    "incremental": true,
     "module": "commonjs",
     "outDir": "lib",
     "rootDir": "src",

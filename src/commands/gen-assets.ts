@@ -14,15 +14,19 @@ export default class GenAssets extends NzCommand {
   override async run(): Promise<void> {
     const {flags} = this.parse(GenAssets);
     const [rootConf, confPath] = await this.readConfig(flags.config);
-    const conf = rootConf[KEY];
-    if (conf) {
-      this.impl(conf);
+    const confs = rootConf[KEY];
+    if (confs) {
+      for (const conf of confs) {
+        this.impl(conf);
+      }
     } else {
       this.configNotFoundError(KEY, confPath);
     }
   }
 
-  private async impl(conf: NonNullable<NzConfig[typeof KEY]>): Promise<void> {
+  private async impl(
+    conf: NonNullable<NzConfig[typeof KEY]>[number],
+  ): Promise<void> {
     const {prefixPath, path, output} = conf;
 
     // Implementation
