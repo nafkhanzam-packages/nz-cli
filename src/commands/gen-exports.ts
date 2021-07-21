@@ -1,8 +1,10 @@
 import path from "path";
 import {NzConfig} from "../config";
 import {NzCommand} from "../nz-command";
-import * as exportGenerator from "export-generator";
 import chalk from "chalk";
+import fg from "fast-glob";
+import fs from "fs-extra";
+import prettier from "prettier";
 
 const KEY = "gen-exports";
 
@@ -26,12 +28,27 @@ export default class GenExports extends NzCommand {
     const {globs, output} = conf;
 
     // Implementation
-    const {base, dir} = path.parse(output);
-    exportGenerator.generateExport({
-      sourceGlobs: globs.map((v) => `${process.cwd()}/${v}`),
-      outputDirectory: `${process.cwd()}/${dir}`,
-      outputFileName: base,
-    });
+    const rawEntries = await fg(globs);
+    let res = "";
+    for (const entry of rawEntries) {
+      if (entry === output) {
+        continue;
+      }
+      const {dir, name} = path.parse(
+        path.relative(path.parse(output).dir, entry),
+      );
+      res += `export * from "./${path.normalize(`./${dir}/${name}`)}"\n`;
+    }
+
+    const prettierConfig = prettier.resolveConfig.sync(output);
+    await fs.writeFile(
+      output,
+      prettier.format(res, {
+        parser: "typescript",
+        ...prettierConfig,
+      }),
+    );
+
     this.log(
       `Successfully written generated exports to ${chalk.yellow(output)}!`,
     );
