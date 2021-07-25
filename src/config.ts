@@ -13,7 +13,10 @@ export const nzConfigValidator = zod
       zod.object({
         path: zod.string(),
         output: zod.string(),
-        extensions: zod.array(zod.string()).optional(),
+        extensions: zod.array(zod.string()).default([]),
+        variable: zod.string().default("urls"),
+        prefix: zod.string().default("/"),
+        suffix: zod.string().default(""),
       }),
     ),
     "gen-exports": zod.array(

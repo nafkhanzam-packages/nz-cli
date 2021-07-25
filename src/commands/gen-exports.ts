@@ -37,7 +37,9 @@ export default class GenExports extends NzCommand {
       const {dir, name} = path.parse(
         path.relative(path.parse(output).dir, entry),
       );
-      res += `export * from "./${path.normalize(`./${dir}/${name}`)}"\n`;
+      res += `export * from "./${path
+        .normalize(`./${dir}/${name}`)
+        .replace(/\\/, "/")}"\n`;
     }
 
     const prettierConfig = prettier.resolveConfig.sync(output);

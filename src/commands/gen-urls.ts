@@ -5,7 +5,6 @@ import fs from "fs-extra";
 import _ from "lodash";
 import prettier from "prettier";
 import {NzConfig} from "../config";
-import {utils} from "../utils";
 import sortObject from "deep-sort-object";
 
 const KEY = "gen-urls";
@@ -28,10 +27,9 @@ export default class GenUrls extends NzCommand {
   private async impl(
     conf: NonNullable<NzConfig[typeof KEY]>[number],
   ): Promise<void> {
-    const {path, output} = conf;
+    const {extensions, path, output} = conf;
 
     // Implementation
-    const extensions = conf.extensions ?? [];
     const filterFg =
       extensions.length > 0
         ? extensions.map((v) => `${path}**/*.${v}`)
@@ -39,13 +37,18 @@ export default class GenUrls extends NzCommand {
     const rawEntries = await fg([...filterFg, `!**/_*`]);
     const result: Record<string, unknown> = {};
     for (const rawEntry of rawEntries) {
-      let cutEntry = rawEntry;
+      let entry = rawEntry;
       for (const ext of extensions) {
-        cutEntry = cutEntry.replace(ext, "");
+        const dotext = `.${ext}`;
+        if (entry.endsWith(dotext)) {
+          entry = entry.substring(0, entry.length - dotext.length);
+          break;
+        }
       }
-      const entry = utils.removeExtension(cutEntry);
-      const filePath =
-        entry.substr(path.length - 1).replace(/\/index$/, "") + "/";
+      const filePath = `${conf.prefix}${entry
+        .substr(path.length - 1)
+        .replace(/\/index$/, "")
+        .replace(/^\//, "")}${conf.suffix}`;
       const objPath = entry
         .substr(path.length)
         .split("/")
@@ -58,7 +61,7 @@ export default class GenUrls extends NzCommand {
     let stringified = JSON.stringify(sortedResult);
 
     // Replacing to functions
-    const matches = stringified.match(/"\/([^"]*)\[([^"]*)\]([^"]*)\/"/g) ?? [];
+    const matches = stringified.match(/"([^"]*)\[([^"]*)\]([^"]*)"/g) ?? [];
     for (const match of matches) {
       let result = match.replace(/"/g, "`");
       const slugMatches = result.match(/\[(.*?)\]/g) ?? [];
@@ -86,7 +89,7 @@ export default class GenUrls extends NzCommand {
         * DON'T CHANGE IT MANUALLY.
         */
 
-        export const urls = ${stringified}
+        export const ${conf.variable} = ${stringified}
       `,
         {
           parser: "typescript",
