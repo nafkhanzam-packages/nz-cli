@@ -7,9 +7,12 @@ import {utils} from "../utils";
 
 const KEY = "gen-graphql-api";
 
+type Conf = NonNullable<NzConfig[typeof KEY]>[number];
+
 export default class GenUrls extends NzCommand {
   private project!: tsm.Project;
   private source!: tsm.SourceFile;
+  private conf!: Conf;
   override async run(): Promise<void> {
     this.project = new tsm.Project({
       tsConfigFilePath: "tsconfig.json",
@@ -27,9 +30,8 @@ export default class GenUrls extends NzCommand {
     }
   }
 
-  private async impl(
-    conf: NonNullable<NzConfig[typeof KEY]>[number],
-  ): Promise<void> {
+  private async impl(conf: Conf): Promise<void> {
+    this.conf = conf;
     const {rootFolder, output} = conf;
 
     // Implementation
@@ -91,61 +93,102 @@ ${stringified}
       .getChildSyntaxListOrThrow()
       .getChildrenOfKind(tsm.SyntaxKind.PropertySignature);
 
-    const gqlInputTypes = this.getASTInputType(inputNodes);
+    const gqlInputTypes = this.getASTInputTypeObject(inputNodes);
 
-    console.log(JSON.stringify(gqlInputTypes));
+    console.log(JSON.stringify(gqlInputTypes, null, 2));
 
-    return ``;
-    //     return `
-    // ${nodes.map((v) => v.getFullText()).join("\n")}
+    // return ``;
+    return `
+${nodes.map((v) => v.getFullText()).join("\n")}
 
-    // const impl = fnNode.getFullText()
+const impl = ${fnNode.getFullText()}
 
-    // export const ${variableName} = objectType({
-    //   name: "${variableName}",
-    //   definition(t) {
-    //     t.field("${fieldName}", {
-    //       type: "Boolean",
-    //       args: {
-    //         input: arg({
-    //           type: inputObjectType({
-    //             name: "${variableName}_input",
-    //             definition(t) {
-    //               t.field({
-    //                 name: "name",
-    //                 type: "String",
-    //               });
-    //             },
-    //           }),
-    //         }),
-    //       },
-    //     });
-    //   },
-    // });
-    //     `;
+export const ${variableName} = objectType({
+  name: "${variableName}",
+  definition(t) {
+    t.field("${fieldName}", {
+      type: "Boolean",
+      args: {
+        input: arg({
+          type: inputObjectType({
+            name: "${variableName}_input",
+            definition(t) {
+              t.field({
+                name: "name",
+                type: "String",
+              });
+            },
+          }),
+        }),
+      },
+    });
+  },
+});
+    `;
   }
 
-  private getASTInputType(
+  private getASTInputTypeObject(
     inputNodes: tsm.Node<tsm.ts.Node>[],
   ): ASTInputTypeLiteral {
     const result: ASTInputType[] = [];
     for (const inputNode of inputNodes) {
       const name = inputNode.getSymbolOrThrow().getEscapedName();
-      const typeNode = inputNode.getChildren()[2];
-      const objectNode = typeNode.asKind(tsm.SyntaxKind.TypeLiteral);
-      if (objectNode) {
-        const nextInputNode = objectNode
-          .getChildSyntaxListOrThrow()
-          .getChildrenOfKind(tsm.SyntaxKind.PropertySignature);
-        result.push([name, this.getASTInputType(nextInputNode)]);
-      } else {
-        result.push([name, this.getASTInputTypeNonTypeLiteral(typeNode)]);
-      }
+      const typeNodes = inputNode.getChildren();
+      let typeNode = typeNodes[typeNodes.length - 2];
+      const isNullable = typeNodes.some((v) => this.isNullable(v));
+      result.push([name, this.getASTInputType(typeNode, isNullable)]);
     }
     return {
       type: "object",
       value: result,
     };
+  }
+
+  private getASTInputType(
+    typeNode: tsm.Node<tsm.ts.Node>,
+    isNullable: boolean,
+  ): ASTInputTypeLiteral {
+    const isArray = typeNode.asKind(tsm.SyntaxKind.ArrayType);
+    if (isArray) {
+      typeNode = isArray.getChildAtIndex(0);
+    }
+    // console.log(typeNodes.map((v) => [v.getText(), v.getKindName()]));
+    const opts: Partial<ASTInputTypeLiteral> = {
+      isNullable,
+      isArray: !!isArray,
+    };
+    const objectNode = typeNode.asKind(tsm.SyntaxKind.TypeLiteral);
+    const unionNode = typeNode.asKind(tsm.SyntaxKind.UnionType);
+    if (objectNode) {
+      const nextInputNode = objectNode
+        .getChildSyntaxListOrThrow()
+        .getChildrenOfKind(tsm.SyntaxKind.PropertySignature);
+      return {...opts, ...this.getASTInputTypeObject(nextInputNode)};
+    } else if (unionNode) {
+      return {...opts, ...this.getUnionInputType(unionNode)};
+    } else {
+      return {...opts, ...this.getASTInputTypeNonTypeLiteral(typeNode)};
+    }
+  }
+
+  private isNullable(node: tsm.Node<tsm.ts.Node>) {
+    return (
+      node.asKind(tsm.SyntaxKind.QuestionToken) ||
+      node
+        .asKind(tsm.SyntaxKind.UnionType)
+        ?.getTypeNodes()
+        .some((v) => this.isNodeUndefinedOrNull(v))
+    );
+  }
+
+  private isNodeUndefinedOrNull(node: tsm.Node<tsm.ts.Node>) {
+    return (
+      node
+        .asKind(tsm.SyntaxKind.LiteralType)
+        ?.getLiteral()
+        .asKind(tsm.SyntaxKind.NullKeyword) ||
+      node.asKind(tsm.SyntaxKind.UndefinedKeyword)
+    );
   }
 
   private getASTInputTypeNonTypeLiteral(
@@ -160,16 +203,13 @@ ${stringified}
       const enumNode = this.source.getEnum(typeName);
       const nextTypeNode = this.source.getTypeAlias(typeName);
       if (enumNode) {
-        const inputNodes = enumNode
-          .getChildSyntaxListOrThrow()
-          .getChildrenOfKind(tsm.SyntaxKind.EnumMember);
-        return this.getEnumInputType(inputNodes);
+        return this.getEnumInputType(enumNode);
       } else if (nextTypeNode) {
         const inputNodes = nextTypeNode
           .getChildrenOfKind(tsm.SyntaxKind.TypeLiteral)[0]
           .getChildSyntaxListOrThrow()
           .getChildrenOfKind(tsm.SyntaxKind.PropertySignature);
-        return this.getASTInputType(inputNodes);
+        return this.getASTInputTypeObject(inputNodes);
       } else {
         this.error(`Unimplemented type ${typeName}!`);
       }
@@ -180,12 +220,37 @@ ${stringified}
     };
   }
 
-  private getEnumInputType(enumNodes: tsm.EnumMember[]): ASTInputTypeLiteral {
+  private getEnumInputType(enumNode: tsm.EnumDeclaration): ASTInputTypeLiteral {
+    const enumNodes = enumNode
+      .getChildSyntaxListOrThrow()
+      .getChildrenOfKind(tsm.SyntaxKind.EnumMember);
     return {
       type: "enum",
       value: enumNodes.map((v) =>
         v
           .getChildAtIndex(2)
+          .asKindOrThrow(tsm.SyntaxKind.StringLiteral)
+          .getLiteralValue(),
+      ),
+    };
+  }
+
+  private getUnionInputType(unionNode: tsm.UnionTypeNode): ASTInputTypeLiteral {
+    const filtered = unionNode
+      .getTypeNodes()
+      .filter((v) => !this.isNodeUndefinedOrNull(v));
+    if (filtered.length === 1) {
+      return this.getASTInputType(
+        filtered[0],
+        unionNode.getTypeNodes().some((v) => this.isNullable(v)),
+      );
+    }
+    return {
+      type: "enum",
+      value: filtered.map((v) =>
+        v
+          .asKindOrThrow(tsm.SyntaxKind.LiteralType)
+          .getLiteral()
           .asKindOrThrow(tsm.SyntaxKind.StringLiteral)
           .getLiteralValue(),
       ),

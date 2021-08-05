@@ -31,6 +31,13 @@ export const nzConfigValidator = zod
         rootFolder: zod.string(),
         output: zod.string(),
         variable: zod.string().default("types"),
+        types: zod
+          .object({
+            path: zod.string(),
+            alias: zod.string(),
+          })
+          .array()
+          .default([]),
       }),
     ),
   })
