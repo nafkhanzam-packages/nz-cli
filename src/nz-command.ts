@@ -1,6 +1,10 @@
 import {validatorUtils} from "@nafkhanzam/common-utils";
 import Command, {flags} from "@oclif/command";
-import * as fs from "fs-extra";
+import fg from "fast-glob";
+import chalk from "chalk";
+import _ from "lodash";
+import fs from "fs-extra";
+import prettier from "prettier";
 import {DEFAULT_CONFIG_PATH, NzConfig, nzConfigValidator} from "./config";
 
 export abstract class NzCommand extends Command {
@@ -41,5 +45,29 @@ export abstract class NzCommand extends Command {
     this.error(`${key} configuration is not found!`, {
       suggestions: [`Specify "${key}" configuration in the ${confPath} file!`],
     });
+  };
+  protected writeOutput = async (output: string, value: string) => {
+    const prettierConfig = prettier.resolveConfig.sync(output);
+    await fs.writeFile(
+      output,
+      prettier.format(
+        `
+        /**
+        * THIS IS AUTOMATICALLY GENERATED USING @nafkhanzam/nz-cli.
+        * DON'T CHANGE IT MANUALLY.
+        */
+
+        ${value}
+      `,
+        {
+          parser: "typescript",
+          ...prettierConfig,
+        },
+      ),
+    );
+
+    this.log(
+      `Successfully written generated variable(s) to ${chalk.yellow(output)}!`,
+    );
   };
 }

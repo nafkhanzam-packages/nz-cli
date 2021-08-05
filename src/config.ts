@@ -7,6 +7,7 @@ export const nzConfigValidator = zod
         prefixPath: zod.string(),
         path: zod.string(),
         output: zod.string(),
+        variable: zod.string().default("assets"),
       }),
     ),
     "gen-urls": zod.array(
@@ -23,6 +24,13 @@ export const nzConfigValidator = zod
       zod.object({
         globs: zod.array(zod.string()),
         output: zod.string(),
+      }),
+    ),
+    "gen-graphql-api": zod.array(
+      zod.object({
+        rootFolder: zod.string(),
+        output: zod.string(),
+        variable: zod.string().default("types"),
       }),
     ),
   })

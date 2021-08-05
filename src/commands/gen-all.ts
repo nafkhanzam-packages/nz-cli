@@ -6,8 +6,8 @@ import GenUrls from "./gen-urls";
 
 const COMMANDS: readonly (readonly [keyof NzConfig, typeof NzCommand])[] = [
   ["gen-assets", GenAssets],
-  ["gen-exports", GenExports],
   ["gen-urls", GenUrls],
+  ["gen-exports", GenExports],
 ];
 
 export default class GenAll extends NzCommand {

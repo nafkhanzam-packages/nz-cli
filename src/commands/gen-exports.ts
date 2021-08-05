@@ -1,10 +1,7 @@
+import fg from "fast-glob";
 import path from "path";
 import {NzConfig} from "../config";
 import {NzCommand} from "../nz-command";
-import chalk from "chalk";
-import fg from "fast-glob";
-import fs from "fs-extra";
-import prettier from "prettier";
 
 const KEY = "gen-exports";
 
@@ -42,17 +39,6 @@ export default class GenExports extends NzCommand {
         .replace(/\\/, "/")}"\n`;
     }
 
-    const prettierConfig = prettier.resolveConfig.sync(output);
-    await fs.writeFile(
-      output,
-      prettier.format(res, {
-        parser: "typescript",
-        ...prettierConfig,
-      }),
-    );
-
-    this.log(
-      `Successfully written generated exports to ${chalk.yellow(output)}!`,
-    );
+    await this.writeOutput(output, res);
   }
 }

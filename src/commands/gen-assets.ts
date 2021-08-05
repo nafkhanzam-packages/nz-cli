@@ -1,12 +1,9 @@
-import chalk from "chalk";
-import {NzCommand} from "../nz-command";
-import fg from "fast-glob";
-import fs from "fs-extra";
-import _ from "lodash";
-import prettier from "prettier";
-import {NzConfig} from "../config";
-import {utils} from "../utils";
 import sortObject from "deep-sort-object";
+import fg from "fast-glob";
+import _ from "lodash";
+import {NzConfig} from "../config";
+import {NzCommand} from "../nz-command";
+import {utils} from "../utils";
 
 const KEY = "gen-assets";
 
@@ -45,27 +42,11 @@ export default class GenAssets extends NzCommand {
 
     const sortedResult = sortObject(result);
 
-    const prettierConfig = prettier.resolveConfig.sync(output);
-    await fs.writeFile(
+    const stringified = JSON.stringify(sortedResult);
+
+    await this.writeOutput(
       output,
-      prettier.format(
-        `
-          /**
-          * THIS IS AUTOMATICALLY GENERATED USING @nafkhanzam/nz-cli.
-          * DON'T CHANGE IT MANUALLY.
-          */
-
-          export const assets = ${JSON.stringify(sortedResult)}
-        `,
-        {
-          parser: "typescript",
-          ...prettierConfig,
-        },
-      ),
-    );
-
-    this.log(
-      `Successfully written generated assets to ${chalk.yellow(output)}!`,
+      `export const ${conf.variable} = ${stringified}`,
     );
   }
 }

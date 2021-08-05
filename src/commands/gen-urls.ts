@@ -1,11 +1,8 @@
-import chalk from "chalk";
-import {NzCommand} from "../nz-command";
-import fg from "fast-glob";
-import fs from "fs-extra";
-import _ from "lodash";
-import prettier from "prettier";
-import {NzConfig} from "../config";
 import sortObject from "deep-sort-object";
+import fg from "fast-glob";
+import _ from "lodash";
+import {NzConfig} from "../config";
+import {NzCommand} from "../nz-command";
 
 const KEY = "gen-urls";
 const ARGS = "_";
@@ -79,25 +76,9 @@ export default class GenUrls extends NzCommand {
       stringified = stringified.replace(match, fnString);
     }
 
-    const prettierConfig = prettier.resolveConfig.sync(output);
-    await fs.writeFile(
+    await this.writeOutput(
       output,
-      prettier.format(
-        `
-        /**
-        * THIS IS AUTOMATICALLY GENERATED USING @nafkhanzam/nz-cli.
-        * DON'T CHANGE IT MANUALLY.
-        */
-
-        export const ${conf.variable} = ${stringified}
-      `,
-        {
-          parser: "typescript",
-          ...prettierConfig,
-        },
-      ),
+      `export const ${conf.variable} = ${stringified}`,
     );
-
-    this.log(`Successfully written generated urls to ${chalk.yellow(output)}!`);
   }
 }
