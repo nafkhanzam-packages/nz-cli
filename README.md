@@ -32,7 +32,6 @@ USAGE
 * [`nz gen-assets`](#nz-gen-assets)
 * [`nz gen-class`](#nz-gen-class)
 * [`nz gen-exports`](#nz-gen-exports)
-* [`nz gen-graphql-api`](#nz-gen-graphql-api)
 * [`nz gen-urls`](#nz-gen-urls)
 * [`nz help [COMMAND]`](#nz-help-command)
 
@@ -83,18 +82,6 @@ OPTIONS
 ```
 
 _See code: [src/commands/gen-exports.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.20/src/commands/gen-exports.ts)_
-
-## `nz gen-graphql-api`
-
-```
-USAGE
-  $ nz gen-graphql-api
-
-OPTIONS
-  -c, --config=config  Configuration file path.
-```
-
-_See code: [src/commands/gen-graphql-api.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.20/src/commands/gen-graphql-api.ts)_
 
 ## `nz gen-urls`
 
