@@ -30,6 +30,7 @@ USAGE
 <!-- commands -->
 * [`nz gen-all`](#nz-gen-all)
 * [`nz gen-assets`](#nz-gen-assets)
+* [`nz gen-class`](#nz-gen-class)
 * [`nz gen-exports`](#nz-gen-exports)
 * [`nz gen-graphql-api`](#nz-gen-graphql-api)
 * [`nz gen-urls`](#nz-gen-urls)
@@ -58,6 +59,18 @@ OPTIONS
 ```
 
 _See code: [src/commands/gen-assets.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.20/src/commands/gen-assets.ts)_
+
+## `nz gen-class`
+
+```
+USAGE
+  $ nz gen-class
+
+OPTIONS
+  -c, --config=config  Configuration file path.
+```
+
+_See code: [src/commands/gen-class.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.20/src/commands/gen-class.ts)_
 
 ## `nz gen-exports`
 

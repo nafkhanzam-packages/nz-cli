@@ -26,18 +26,11 @@ export const nzConfigValidator = zod
         output: zod.string(),
       }),
     ),
-    "gen-graphql-api": zod.array(
+    "gen-class": zod.array(
       zod.object({
-        rootFolder: zod.string(),
+        extensions: zod.string().array().default(["ts", "tsx"]),
         output: zod.string(),
-        variable: zod.string().default("types"),
-        types: zod
-          .object({
-            path: zod.string(),
-            alias: zod.string(),
-          })
-          .array()
-          .default([]),
+        className: zod.string(),
       }),
     ),
   })

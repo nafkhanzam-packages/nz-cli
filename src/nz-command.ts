@@ -47,15 +47,19 @@ export abstract class NzCommand extends Command {
     });
   };
   protected writeOutput = async (output: string, value: string) => {
+    const exists = await fs.pathExists(output);
+    if (!exists) {
+      await fs.createFile(output);
+    }
     const prettierConfig = prettier.resolveConfig.sync(output);
     await fs.writeFile(
       output,
       prettier.format(
         `
         /**
-        * THIS IS AUTOMATICALLY GENERATED USING @nafkhanzam/nz-cli.
-        * DON'T CHANGE IT MANUALLY.
-        */
+         * ! YOU'RE NOT SUPPOSED TO CHANGE THIS CONTENTS AS IT CAN BE REWRITTEN ON GENERATION!
+         * ~ @nafkhanzam/nz-cli
+         */
 
         ${value}
       `,

@@ -1,6 +1,7 @@
 import {NzConfig} from "../config";
 import {NzCommand} from "../nz-command";
 import GenAssets from "./gen-assets";
+import GenClass from "./gen-class";
 import GenExports from "./gen-exports";
 import GenUrls from "./gen-urls";
 
@@ -8,6 +9,7 @@ const COMMANDS: readonly (readonly [keyof NzConfig, typeof NzCommand])[] = [
   ["gen-assets", GenAssets],
   ["gen-urls", GenUrls],
   ["gen-exports", GenExports],
+  ["gen-class", GenClass],
 ];
 
 export default class GenAll extends NzCommand {
