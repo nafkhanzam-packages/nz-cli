@@ -74,7 +74,8 @@
     "prepack": "tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md",
-    "patch": "yarn version --patch"
+    "patch": "yarn version --patch",
+    "build": "tsc -b"
   },
   "types": "lib/index.d.ts"
 }

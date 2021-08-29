@@ -51,24 +51,28 @@ export abstract class NzCommand extends Command {
     if (!exists) {
       await fs.createFile(output);
     }
-    const prettierConfig = prettier.resolveConfig.sync(output);
-    await fs.writeFile(
-      output,
-      prettier.format(
-        `
-        /**
-         * ! YOU'RE NOT SUPPOSED TO CHANGE THIS CONTENTS AS IT CAN BE REWRITTEN ON GENERATION!
-         * ~ @nafkhanzam/nz-cli
-         */
 
-        ${value}
-      `,
-        {
-          parser: "typescript",
-          ...prettierConfig,
-        },
-      ),
-    );
+    let res = `
+    /**
+     * ! YOU'RE NOT SUPPOSED TO CHANGE THIS CONTENTS AS IT CAN BE REWRITTEN ON GENERATION!
+     * ~ @nafkhanzam/nz-cli
+     */
+
+    ${value}
+  `;
+
+    try {
+      const prettierConfig = prettier.resolveConfig.sync(output);
+      res = prettier.format(res, {
+        parser: "typescript",
+        ...prettierConfig,
+      });
+    } catch (error) {
+      console.error(error);
+      this.warn(`Failed to format file with prettier!`);
+    }
+
+    await fs.writeFile(output, res);
 
     this.log(
       `Successfully written generated variable(s) to ${chalk.yellow(output)}!`,

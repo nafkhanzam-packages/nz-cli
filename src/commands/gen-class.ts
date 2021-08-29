@@ -7,11 +7,19 @@ import {NzCommand} from "../nz-command";
 const KEY = "gen-class";
 
 class ObjectGenerator {
-  constructor(private obj: object | string, private isRoot = false) {}
+  constructor(
+    private obj: object | string,
+    private opts?: {
+      isRoot?: boolean;
+      prefixContent?: string;
+    },
+  ) {}
 
   generate() {
-    const assignSymbol = this.isRoot ? " = " : ": ";
-    const endSymbol = this.isRoot ? ";" : ",";
+    const prefixContent = this.opts?.prefixContent;
+    const isRoot = !!this.opts?.isRoot;
+    const assignSymbol = isRoot ? " = " : ": ";
+    const endSymbol = isRoot ? ";" : ",";
     if (typeof this.obj === "object") {
       const strs: string[] = [];
       for (const [key, value] of Object.entries(this.obj)) {
@@ -22,6 +30,7 @@ class ObjectGenerator {
         );
       }
       return `{
+        ${prefixContent ? `${prefixContent}\n` : ""}
         ${strs.sort().join("\n")}
       }`;
     } else {
@@ -47,7 +56,15 @@ export default class GenClass extends NzCommand {
   private async impl(
     conf: NonNullable<NzConfig[typeof KEY]>[number],
   ): Promise<void> {
-    const {output, extensions, className} = conf;
+    const {
+      output,
+      extensions,
+      className,
+      extendClass,
+      prefixContent,
+      ignores,
+      fieldNameExceptionMap,
+    } = conf;
 
     // Implementation
     const outputPath = path.parse(output);
@@ -55,31 +72,51 @@ export default class GenClass extends NzCommand {
       extensions.length > 0
         ? extensions.map((v) => `${outputPath.dir}/**/*.${v}`)
         : [`${outputPath.dir}/**/*`];
-    const rawEntries = await fg([...filterFg, `!**/_*`]);
+    const rawEntries = await fg([
+      ...filterFg,
+      `!**/_*`,
+      ...ignores.map((v) => `!${v}`),
+    ]);
     const obj: object = {};
     const imports: string[] = [];
+
+    let extendStr = ``;
+    if (extendClass) {
+      imports.push(
+        `import {${extendClass.className}} from "${extendClass.importFrom}";`,
+      );
+      extendStr = ` extends ${extendClass.className}`;
+    }
+
     for (const entry of rawEntries) {
       if (entry === output) {
         continue;
       }
       const {dir, name} = path.parse(path.relative(outputPath.dir, entry));
-      const exportName = _.upperFirst(_.camelCase(name));
+      const exportName =
+        fieldNameExceptionMap[name] ?? _.upperFirst(_.camelCase(name));
       imports.push(
         `import {${exportName}} from "./${path
           .normalize(`./${dir}/${name}`)
           .replace(/\\/, "/")}";`,
       );
-      _.set(
-        obj,
-        `${dir.split("/").map(_.camelCase).join(".")}.${exportName}`,
-        exportName,
-      );
+      const dirarr = dir.split("/").filter((v) => !!v);
+      let varPath: string;
+      if (dirarr.length) {
+        varPath = `${dirarr.map(_.camelCase).join(".")}.${exportName}`;
+      } else {
+        varPath = exportName;
+      }
+      _.set(obj, varPath, exportName);
     }
 
     const res = `
       ${imports.sort().join("\n")}
 
-      export class ${className} ${new ObjectGenerator(obj, true).generate()}
+      export class ${className}${extendStr} ${new ObjectGenerator(obj, {
+      isRoot: true,
+      prefixContent,
+    }).generate()}
     `;
 
     await this.writeOutput(output, res);

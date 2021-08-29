@@ -31,6 +31,15 @@ export const nzConfigValidator = zod
         extensions: zod.string().array().default(["ts", "tsx"]),
         output: zod.string(),
         className: zod.string(),
+        extendClass: zod
+          .object({
+            className: zod.string(),
+            importFrom: zod.string(),
+          })
+          .optional(),
+        prefixContent: zod.string().optional(),
+        ignores: zod.string().array().default([]),
+        fieldNameExceptionMap: zod.record(zod.string()).default({}),
       }),
     ),
   })
