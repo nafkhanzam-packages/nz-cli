@@ -64,6 +64,7 @@ export default class GenClass extends NzCommand {
       prefixContent,
       ignores,
       fieldNameExceptionMap,
+      imports,
     } = conf;
 
     // Implementation
@@ -78,11 +79,15 @@ export default class GenClass extends NzCommand {
       ...ignores.map((v) => `!${v}`),
     ]);
     const obj: object = {};
-    const imports: string[] = [];
+    const importArr: string[] = [];
+
+    for (const v of imports) {
+      importArr.push(`import ${v.value} from "${v.path}";`);
+    }
 
     let extendStr = ``;
     if (extendClass) {
-      imports.push(
+      importArr.push(
         `import {${extendClass.className}} from "${extendClass.importFrom}";`,
       );
       extendStr = ` extends ${extendClass.className}`;
@@ -95,7 +100,7 @@ export default class GenClass extends NzCommand {
       const {dir, name} = path.parse(path.relative(outputPath.dir, entry));
       const exportName =
         fieldNameExceptionMap[name] ?? _.upperFirst(_.camelCase(name));
-      imports.push(
+      importArr.push(
         `import {${exportName}} from "./${path
           .normalize(`./${dir}/${name}`)
           .replace(/\\/, "/")}";`,
@@ -111,7 +116,7 @@ export default class GenClass extends NzCommand {
     }
 
     const res = `
-      ${imports.sort().join("\n")}
+      ${importArr.sort().join("\n")}
 
       export class ${className}${extendStr} ${new ObjectGenerator(obj, {
       isRoot: true,
