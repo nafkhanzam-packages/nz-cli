@@ -65,7 +65,19 @@ export default class GenClass extends NzCommand {
       ignores,
       fieldNameExceptionMap,
       imports,
+      variableNameCase,
     } = conf;
+
+    console.log(variableNameCase);
+    const variableNameMap = (name: string) => {
+      if (
+        (variableNameCase.camel ?? []).some((v) => new RegExp(v).test(name))
+      ) {
+        console.log(name);
+        return _.camelCase(name);
+      }
+      return _.upperFirst(_.camelCase(name));
+    };
 
     // Implementation
     const outputPath = path.parse(output);
@@ -98,8 +110,7 @@ export default class GenClass extends NzCommand {
         continue;
       }
       const {dir, name} = path.parse(path.relative(outputPath.dir, entry));
-      const exportName =
-        fieldNameExceptionMap[name] ?? _.upperFirst(_.camelCase(name));
+      const exportName = fieldNameExceptionMap[name] ?? variableNameMap(name);
       importArr.push(
         `import {${exportName}} from "./${path
           .normalize(`./${dir}/${name}`)

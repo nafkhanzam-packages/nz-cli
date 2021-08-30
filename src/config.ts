@@ -40,6 +40,13 @@ export const nzConfigValidator = zod
         prefixContent: zod.string().optional(),
         ignores: zod.string().array().default([]),
         fieldNameExceptionMap: zod.record(zod.string()).default({}),
+        variableNameCase: zod
+          .object({
+            camel: zod.string().array(),
+            pascal: zod.string().array(),
+          })
+          .partial()
+          .default({}),
         imports: zod
           .object({
             value: zod.string(),
