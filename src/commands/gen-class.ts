@@ -68,12 +68,10 @@ export default class GenClass extends NzCommand {
       variableNameCase,
     } = conf;
 
-    console.log(variableNameCase);
     const variableNameMap = (name: string) => {
       if (
         (variableNameCase.camel ?? []).some((v) => new RegExp(v).test(name))
       ) {
-        console.log(name);
         return _.camelCase(name);
       }
       return _.upperFirst(_.camelCase(name));
