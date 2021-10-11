@@ -1,7 +1,7 @@
 {
   "name": "@nafkhanzam/nz-cli",
   "description": "command utilities for nafkhanzam projects",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "author": "nafkhanzam @nafkhanzam",
   "bin": {
     "nz": "./bin/run"

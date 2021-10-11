@@ -19,7 +19,7 @@ $ npm install -g @nafkhanzam/nz-cli
 $ nz COMMAND
 running command...
 $ nz (-v|--version|version)
-@nafkhanzam/nz-cli/0.0.20 linux-x64 node-v14.17.1
+@nafkhanzam/nz-cli/0.0.21 linux-x64 node-v14.17.1
 $ nz --help [COMMAND]
 USAGE
   $ nz COMMAND
@@ -45,7 +45,7 @@ OPTIONS
   -c, --config=config  Configuration file path.
 ```
 
-_See code: [src/commands/gen-all.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.20/src/commands/gen-all.ts)_
+_See code: [src/commands/gen-all.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.21/src/commands/gen-all.ts)_
 
 ## `nz gen-assets`
 
@@ -57,7 +57,7 @@ OPTIONS
   -c, --config=config  Configuration file path.
 ```
 
-_See code: [src/commands/gen-assets.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.20/src/commands/gen-assets.ts)_
+_See code: [src/commands/gen-assets.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.21/src/commands/gen-assets.ts)_
 
 ## `nz gen-class`
 
@@ -69,7 +69,7 @@ OPTIONS
   -c, --config=config  Configuration file path.
 ```
 
-_See code: [src/commands/gen-class.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.20/src/commands/gen-class.ts)_
+_See code: [src/commands/gen-class.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.21/src/commands/gen-class.ts)_
 
 ## `nz gen-exports`
 
@@ -81,7 +81,7 @@ OPTIONS
   -c, --config=config  Configuration file path.
 ```
 
-_See code: [src/commands/gen-exports.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.20/src/commands/gen-exports.ts)_
+_See code: [src/commands/gen-exports.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.21/src/commands/gen-exports.ts)_
 
 ## `nz gen-urls`
 
@@ -93,7 +93,7 @@ OPTIONS
   -c, --config=config  Configuration file path.
 ```
 
-_See code: [src/commands/gen-urls.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.20/src/commands/gen-urls.ts)_
+_See code: [src/commands/gen-urls.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.21/src/commands/gen-urls.ts)_
 
 ## `nz help [COMMAND]`
 
