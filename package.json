@@ -1,14 +1,14 @@
 {
   "name": "@nafkhanzam/nz-cli",
   "description": "command utilities for nafkhanzam projects",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "author": "nafkhanzam @nafkhanzam",
   "bin": {
     "nz": "./bin/run"
   },
   "bugs": "https://github.com/nafkhanzam/nz-cli/issues",
   "dependencies": {
-    "@nafkhanzam/common-utils": "../common-utils",
+    "@nafkhanzam/common-utils": "^0.0.60",
     "@oclif/command": "^1.8.0",
     "@oclif/config": "^1.17.0",
     "@oclif/plugin-help": "^3.2.2",
