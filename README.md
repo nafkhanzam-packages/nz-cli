@@ -19,7 +19,7 @@ $ npm install -g @nafkhanzam/nz-cli
 $ nz COMMAND
 running command...
 $ nz (-v|--version|version)
-@nafkhanzam/nz-cli/0.0.22 linux-x64 node-v14.17.1
+@nafkhanzam/nz-cli/0.0.23 linux-x64 node-v14.17.1
 $ nz --help [COMMAND]
 USAGE
   $ nz COMMAND
