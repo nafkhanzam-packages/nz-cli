@@ -51,7 +51,6 @@ export default class CheckPackage extends NzCommand<typeof KEY> {
             (regexpToCheck) => !regexpToCheck.test(String(value)),
           )
         ) {
-          console.log(regexpToCheckList);
           throw this.error(
             new Error(
               chalk.redBright(
