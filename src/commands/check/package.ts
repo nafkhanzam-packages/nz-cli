@@ -30,6 +30,8 @@ export default class CheckPackage extends NzCommand<typeof KEY> {
       Object.entries(pkg["devDependencies"]),
     ].flat();
 
+    const errors: Error[] = [];
+
     for (const [key, value] of entries) {
       if (exceptions.includes(key)) {
         this.log(`Skipping ${key}...`);
@@ -51,7 +53,7 @@ export default class CheckPackage extends NzCommand<typeof KEY> {
             (regexpToCheck) => !regexpToCheck.test(String(value)),
           )
         ) {
-          throw this.error(
+          errors.push(
             new Error(
               chalk.redBright(
                 `Checking "${packageJsonPath}" failed! Found "${key}" with "${value}" which doesn't fulfill "${checkLevel}" strictness.`,
@@ -60,6 +62,10 @@ export default class CheckPackage extends NzCommand<typeof KEY> {
           );
         }
       }
+    }
+
+    if (errors.length > 0) {
+      throw this.error(errors.map((v) => v.message).join("\n"));
     }
 
     this.log(
