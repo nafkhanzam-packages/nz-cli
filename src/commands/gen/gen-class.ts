@@ -1,59 +1,18 @@
+import {IConfig} from "@oclif/config";
 import fg from "fast-glob";
 import _ from "lodash";
 import path from "path";
-import {NzConfig} from "../config";
-import {NzCommand} from "../nz-command";
+import {NzConfig} from "../../config";
+import {NzCommand} from "../../nz-command";
 
 const KEY = "gen-class";
 
-class ObjectGenerator {
-  constructor(
-    private obj: object | string,
-    private opts?: {
-      isRoot?: boolean;
-      prefixContent?: string;
-    },
-  ) {}
-
-  generate() {
-    const prefixContent = this.opts?.prefixContent;
-    const isRoot = !!this.opts?.isRoot;
-    const assignSymbol = isRoot ? " = " : ": ";
-    const endSymbol = isRoot ? ";" : ",";
-    if (typeof this.obj === "object") {
-      const strs: string[] = [];
-      for (const [key, value] of Object.entries(this.obj)) {
-        strs.push(
-          `${key}${assignSymbol}${new ObjectGenerator(
-            value,
-          ).generate()}${endSymbol}`,
-        );
-      }
-      return `{
-        ${prefixContent ? `${prefixContent}\n` : ""}
-        ${strs.sort().join("\n")}
-      }`;
-    } else {
-      return this.obj;
-    }
-  }
-}
-
-export default class GenClass extends NzCommand {
-  override async run(): Promise<void> {
-    const {flags} = this.parse(GenClass);
-    const [rootConf, confPath] = await this.readConfig(flags.config);
-    const confs = rootConf[KEY];
-    if (confs) {
-      for (const conf of confs) {
-        this.impl(conf);
-      }
-    } else {
-      this.configNotFoundError(KEY, confPath);
-    }
+export default class GenClass extends NzCommand<typeof KEY> {
+  constructor(argv: string[], config: IConfig) {
+    super(KEY, argv, config);
   }
 
-  private async impl(
+  override async impl(
     conf: NonNullable<NzConfig[typeof KEY]>[number],
   ): Promise<void> {
     const {
@@ -134,5 +93,38 @@ export default class GenClass extends NzCommand {
     `;
 
     await this.writeOutput(output, res);
+  }
+}
+
+class ObjectGenerator {
+  constructor(
+    private obj: object | string,
+    private opts?: {
+      isRoot?: boolean;
+      prefixContent?: string;
+    },
+  ) {}
+
+  generate() {
+    const prefixContent = this.opts?.prefixContent;
+    const isRoot = !!this.opts?.isRoot;
+    const assignSymbol = isRoot ? " = " : ": ";
+    const endSymbol = isRoot ? ";" : ",";
+    if (typeof this.obj === "object") {
+      const strs: string[] = [];
+      for (const [key, value] of Object.entries(this.obj)) {
+        strs.push(
+          `${key}${assignSymbol}${new ObjectGenerator(
+            value,
+          ).generate()}${endSymbol}`,
+        );
+      }
+      return `{
+        ${prefixContent ? `${prefixContent}\n` : ""}
+        ${strs.sort().join("\n")}
+      }`;
+    } else {
+      return this.obj;
+    }
   }
 }

@@ -1,13 +1,41 @@
-import {validatorUtils} from "@nafkhanzam/common-utils";
 import Command, {flags} from "@oclif/command";
-import fg from "fast-glob";
 import chalk from "chalk";
 import _ from "lodash";
 import fs from "fs-extra";
 import prettier from "prettier";
 import {DEFAULT_CONFIG_PATH, NzConfig, nzConfigValidator} from "./config";
+import {IConfig} from "@oclif/config";
 
-export abstract class NzCommand extends Command {
+type InferKey<TKey extends keyof NzConfig | null> = TKey extends null
+  ? never
+  : TKey;
+
+export abstract class NzCommand<
+  TKey extends keyof NzConfig | null = null,
+> extends Command {
+  constructor(private key: TKey, argv: string[], config: IConfig) {
+    super(argv, config);
+  }
+
+  override async run(): Promise<void> {
+    if (this.key) {
+      const {flags} = this.parse(NzCommand);
+      const [rootConf, confPath] = await this.readConfig(flags.config);
+      const confs = rootConf[this.key!];
+      if (Array.isArray(confs)) {
+        for (const conf of confs) {
+          await this.impl(conf);
+        }
+      } else {
+        this.configNotFoundError(this.key, confPath);
+      }
+    }
+  }
+
+  abstract impl(
+    conf: NonNullable<NzConfig[InferKey<TKey>]>[number],
+  ): Promise<void>;
+
   static flags = {
     config: flags.string({
       char: "c",
@@ -16,11 +44,11 @@ export abstract class NzCommand extends Command {
   };
 
   validateConfig = (raw: unknown): NzConfig => {
-    return validatorUtils.validate(nzConfigValidator, raw);
+    return nzConfigValidator.parse(raw);
   };
 
   readConfig = async (path?: string): Promise<[NzConfig, string]> => {
-    let content = {};
+    let content = undefined;
 
     const pathOrDefault = path ?? DEFAULT_CONFIG_PATH;
     const doesConfigFileExist = await fs.pathExists(pathOrDefault);

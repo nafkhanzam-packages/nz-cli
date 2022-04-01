@@ -1,7 +1,14 @@
-import {zod} from "@nafkhanzam/common-utils";
+import * as zod from "zod";
 
 export const nzConfigValidator = zod
   .object({
+    "check-package": zod.array(
+      zod.object({
+        packageJsonPath: zod.string().default("package.json"),
+        checkLevel: zod.enum(["exact", "minor", "major"]).default("major"),
+        exceptions: zod.string().array().default([]),
+      }),
+    ),
     "gen-assets": zod.array(
       zod.object({
         prefixPath: zod.string(),
@@ -57,7 +64,10 @@ export const nzConfigValidator = zod
       }),
     ),
   })
-  .partial();
+  .partial()
+  .default({
+    "check-package": [{}],
+  });
 
 export type NzConfig = zod.infer<typeof nzConfigValidator>;
 

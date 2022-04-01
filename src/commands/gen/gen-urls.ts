@@ -1,27 +1,19 @@
+import {IConfig} from "@oclif/config";
 import sortObject from "deep-sort-object";
 import fg from "fast-glob";
 import _ from "lodash";
-import {NzConfig} from "../config";
-import {NzCommand} from "../nz-command";
+import {NzConfig} from "../../config";
+import {NzCommand} from "../../nz-command";
 
 const KEY = "gen-urls";
 const ARGS = "_";
 
-export default class GenUrls extends NzCommand {
-  override async run(): Promise<void> {
-    const {flags} = this.parse(GenUrls);
-    const [rootConf, confPath] = await this.readConfig(flags.config);
-    const confs = rootConf[KEY];
-    if (confs) {
-      for (const conf of confs) {
-        this.impl(conf);
-      }
-    } else {
-      this.configNotFoundError(KEY, confPath);
-    }
+export default class GenUrls extends NzCommand<typeof KEY> {
+  constructor(argv: string[], config: IConfig) {
+    super(KEY, argv, config);
   }
 
-  private async impl(
+  override async impl(
     conf: NonNullable<NzConfig[typeof KEY]>[number],
   ): Promise<void> {
     const {extensions, path, output} = conf;
@@ -43,11 +35,11 @@ export default class GenUrls extends NzCommand {
         }
       }
       const filePath = `${conf.prefix}${entry
-        .substr(path.length - 1)
+        .substring(path.length - 1)
         .replace(/\/index$/, "")
         .replace(/^\//, "")}${conf.suffix}`;
       const objPath = entry
-        .substr(path.length)
+        .substring(path.length)
         .split("/")
         .map(_.camelCase)
         .map((v) => (v.match(/^\d(.*)/) ? `_${v}` : v));

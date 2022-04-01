@@ -28,7 +28,7 @@ export const utils = {
     const result: [string, string][] = [];
 
     for (let i = 0; i < entries.length; ++i) {
-      const entryRaw = entries[i].substr(rootFolder.length);
+      const entryRaw = entries[i].substring(rootFolder.length);
       result.push([entryRaw, convertFn(entryRaw, readResults[i])]);
     }
 

@@ -1,25 +1,17 @@
+import {IConfig} from "@oclif/config";
 import fg from "fast-glob";
 import path from "path";
-import {NzConfig} from "../config";
-import {NzCommand} from "../nz-command";
+import {NzConfig} from "../../config";
+import {NzCommand} from "../../nz-command";
 
 const KEY = "gen-exports";
 
-export default class GenExports extends NzCommand {
-  override async run(): Promise<void> {
-    const {flags} = this.parse(GenExports);
-    const [rootConf, confPath] = await this.readConfig(flags.config);
-    const confs = rootConf[KEY];
-    if (confs) {
-      for (const conf of confs) {
-        this.impl(conf);
-      }
-    } else {
-      this.configNotFoundError(KEY, confPath);
-    }
+export default class GenExports extends NzCommand<typeof KEY> {
+  constructor(argv: string[], config: IConfig) {
+    super(KEY, argv, config);
   }
 
-  private async impl(
+  override async impl(
     conf: NonNullable<NzConfig[typeof KEY]>[number],
   ): Promise<void> {
     const {globs, output} = conf;
