@@ -19,7 +19,7 @@ $ npm install -g @nafkhanzam/nz-cli
 $ nz COMMAND
 running command...
 $ nz (-v|--version|version)
-@nafkhanzam/nz-cli/0.0.26 linux-x64 node-v14.17.1
+@nafkhanzam/nz-cli/0.0.27 linux-x64 node-v14.17.1
 $ nz --help [COMMAND]
 USAGE
   $ nz COMMAND
@@ -46,7 +46,7 @@ OPTIONS
   -c, --config=config  Configuration file path.
 ```
 
-_See code: [src/commands/check/package.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.26/src/commands/check/package.ts)_
+_See code: [src/commands/check/package.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.27/src/commands/check/package.ts)_
 
 ## `nz gen:gen-all`
 
@@ -58,7 +58,7 @@ OPTIONS
   -c, --config=config  Configuration file path.
 ```
 
-_See code: [src/commands/gen/gen-all.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.26/src/commands/gen/gen-all.ts)_
+_See code: [src/commands/gen/gen-all.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.27/src/commands/gen/gen-all.ts)_
 
 ## `nz gen:gen-assets`
 
@@ -70,7 +70,7 @@ OPTIONS
   -c, --config=config  Configuration file path.
 ```
 
-_See code: [src/commands/gen/gen-assets.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.26/src/commands/gen/gen-assets.ts)_
+_See code: [src/commands/gen/gen-assets.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.27/src/commands/gen/gen-assets.ts)_
 
 ## `nz gen:gen-class`
 
@@ -82,7 +82,7 @@ OPTIONS
   -c, --config=config  Configuration file path.
 ```
 
-_See code: [src/commands/gen/gen-class.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.26/src/commands/gen/gen-class.ts)_
+_See code: [src/commands/gen/gen-class.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.27/src/commands/gen/gen-class.ts)_
 
 ## `nz gen:gen-exports`
 
@@ -94,7 +94,7 @@ OPTIONS
   -c, --config=config  Configuration file path.
 ```
 
-_See code: [src/commands/gen/gen-exports.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.26/src/commands/gen/gen-exports.ts)_
+_See code: [src/commands/gen/gen-exports.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.27/src/commands/gen/gen-exports.ts)_
 
 ## `nz gen:gen-urls`
 
@@ -106,7 +106,7 @@ OPTIONS
   -c, --config=config  Configuration file path.
 ```
 
-_See code: [src/commands/gen/gen-urls.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.26/src/commands/gen/gen-urls.ts)_
+_See code: [src/commands/gen/gen-urls.ts](https://github.com/nafkhanzam/nz-cli/blob/v0.0.27/src/commands/gen/gen-urls.ts)_
 
 ## `nz help [COMMAND]`
 
