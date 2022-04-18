@@ -1,10 +1,10 @@
 import {IConfig} from "@oclif/config";
 import {NzConfig} from "../../config";
 import {NzCommand} from "../../nz-command";
-import GenAssets from "./gen-assets";
-import GenClass from "./gen-class";
-import GenExports from "./gen-exports";
-import GenUrls from "./gen-urls";
+import GenAssets from "./assets";
+import GenClass from "./class";
+import GenExports from "./exports";
+import GenUrls from "./urls";
 
 //! Unsafe type any
 const COMMANDS: readonly (readonly [keyof NzConfig, any])[] = [
